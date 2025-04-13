@@ -327,6 +327,22 @@ fn calculate_missing_probabilities(
     mut probabilities: [Option<Fraction>; 6],
     mut probabilities_final: [Option<Fraction>; 4],
 ) -> ([Option<Fraction>; 6], [Option<Fraction>; 4]) {
+    // p_a
+    // p_b
+    // p_a_b
+    // p_an_b
+    // p_b_a
+    // p_bn_a
+    // a_union_b + a_union_bn + an_union_b + an_union_bn = 1
+    // path rules
+    // a * a_b = a_union_b | 0 2
+    // b * b_a = a_union_b | 1 4
+    // a * (1-a_b)  = a_union_bn | 0 2
+    // (1-b) * bn_a = a_union_bn | 1 5
+    // (1-a) * an_b = an_union_b | 0 3
+    // b * (1-b_a)  = an_union_b | 1 4
+    // (1-a) * (1-an_b) = an_union_bn | 0 3
+    // (1-b) * (1-bn_a) = an_union_bn | 1 5
     let mut new_information_found = true;
     while new_information_found {
         new_information_found = false;
@@ -368,25 +384,6 @@ fn calculate_missing_probabilities(
         println!("New information found! Next round!");
         println!();
     }
-    // p_a
-    // p_b
-    // p_a_b
-    // p_an_b
-    // p_b_a
-    // p_bn_a
-    // a_union_b + a_union_bn + an_union_b + an_union_bn = 1
-    // <=>
-    // a_union_b + a_union_bn = a
-    // a_union_b + an_union_b = b
-    // path rules
-    // a * a_b = a_union_b | 0 2
-    // b * b_a = a_union_b | 1 4
-    // a * (1-a_b)  = a_union_bn | 0 2
-    // (1-b) * bn_a = a_union_bn | 1 5
-    // (1-a) * an_b = an_union_b | 0 3
-    // b * (1-b_a)  = an_union_b | 1 4
-    // (1-a) * (1-an_b) = an_union_bn | 0 3
-    // (1-b) * (1-bn_a) = an_union_bn | 1 5
     (probabilities, probabilities_final)
 }
 
