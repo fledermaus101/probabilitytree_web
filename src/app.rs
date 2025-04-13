@@ -111,6 +111,9 @@ impl eframe::App for App {
                     }
                 }
             }
+            if ui.button("Reset").clicked() {
+                self.probabilities = Default::default();
+            }
         });
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.columns_const(|[tree_1, tree_2]| {
