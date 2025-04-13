@@ -128,9 +128,9 @@ impl eframe::App for App {
                     Vec2 { x: 200., y: 0. },
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(2, |ui| {
-                            ui[0].text_edit_singleline(&mut self.probabilities[0]);
-                            ui[1].text_edit_singleline(&mut self.probabilities[1]);
+                        ui.columns_const(|[col0, col1]| {
+                            col0.text_edit_singleline(&mut self.probabilities[0]);
+                            col1.text_edit_singleline(&mut self.probabilities[1]);
                         })
                     },
                 );
@@ -138,9 +138,9 @@ impl eframe::App for App {
                     Vec2::new(200., 0.),
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(2, |ui| {
-                            ui[0].vertical_centered(|ui| ui.label(&self.event_a_name));
-                            ui[1].vertical_centered(|ui| ui.label(&self.event_an_name));
+                        ui.columns_const(|[col0, col1]| {
+                            col0.vertical_centered(|ui| ui.label(&self.event_a_name));
+                            col1.vertical_centered(|ui| ui.label(&self.event_an_name));
                         })
                     },
                 );
@@ -148,11 +148,11 @@ impl eframe::App for App {
                     Vec2::new(200., 0.),
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(4, |ui| {
-                            ui[0].text_edit_singleline(&mut self.probabilities[4]);
-                            ui[1].text_edit_singleline(&mut self.probabilities[5]);
-                            ui[2].text_edit_singleline(&mut self.probabilities[6]);
-                            ui[3].text_edit_singleline(&mut self.probabilities[7]);
+                        ui.columns_const(|[col0, col1, col2, col3]| {
+                            col0.text_edit_singleline(&mut self.probabilities[4]);
+                            col1.text_edit_singleline(&mut self.probabilities[5]);
+                            col2.text_edit_singleline(&mut self.probabilities[6]);
+                            col3.text_edit_singleline(&mut self.probabilities[7]);
                         });
                     },
                 );
@@ -160,11 +160,11 @@ impl eframe::App for App {
                     Vec2 { x: 200., y: 0. },
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(4, |ui| {
-                            ui[0].vertical_centered(|ui| ui.label(&self.event_b_name));
-                            ui[1].vertical_centered(|ui| ui.label(&self.event_bn_name));
-                            ui[2].vertical_centered(|ui| ui.label(&self.event_b_name));
-                            ui[3].vertical_centered(|ui| ui.label(&self.event_bn_name));
+                        ui.columns_const(|[col0, col1, col2, col3]| {
+                            col0.vertical_centered(|ui| ui.label(&self.event_b_name));
+                            col1.vertical_centered(|ui| ui.label(&self.event_bn_name));
+                            col2.vertical_centered(|ui| ui.label(&self.event_b_name));
+                            col3.vertical_centered(|ui| ui.label(&self.event_bn_name));
                         });
                     },
                 );
@@ -172,17 +172,17 @@ impl eframe::App for App {
                     Vec2 { x: 200., y: 0. },
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(4, |ui| {
-                            ui[0].vertical_centered(|ui| {
+                        ui.columns_const(|[col0, col1, col2, col3]| {
+                            col0.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[12])
                             });
-                            ui[1].vertical_centered(|ui| {
+                            col1.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[13])
                             });
-                            ui[2].vertical_centered(|ui| {
+                            col2.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[14])
                             });
-                            ui[3].vertical_centered(|ui| {
+                            col3.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[15])
                             });
                         });
@@ -199,9 +199,9 @@ impl eframe::App for App {
                     Vec2 { x: 200., y: 0. },
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(2, |ui| {
-                            ui[0].text_edit_singleline(&mut self.probabilities[2]);
-                            ui[1].text_edit_singleline(&mut self.probabilities[3]);
+                        ui.columns_const(|[col0, col1]| {
+                            col0.text_edit_singleline(&mut self.probabilities[2]);
+                            col1.text_edit_singleline(&mut self.probabilities[3]);
                         })
                     },
                 );
@@ -209,9 +209,9 @@ impl eframe::App for App {
                     Vec2::new(200., 0.),
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(2, |ui| {
-                            ui[0].vertical_centered(|ui| ui.label(&self.event_b_name));
-                            ui[1].vertical_centered(|ui| ui.label(&self.event_bn_name));
+                        ui.columns_const(|[col0, col1]| {
+                            col0.vertical_centered(|ui| ui.label(&self.event_b_name));
+                            col1.vertical_centered(|ui| ui.label(&self.event_bn_name));
                         })
                     },
                 );
@@ -219,11 +219,11 @@ impl eframe::App for App {
                     Vec2::new(200., 0.),
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(4, |ui| {
-                            ui[0].text_edit_singleline(&mut self.probabilities[8]);
-                            ui[1].text_edit_singleline(&mut self.probabilities[9]);
-                            ui[2].text_edit_singleline(&mut self.probabilities[10]);
-                            ui[3].text_edit_singleline(&mut self.probabilities[11]);
+                        ui.columns_const(|[col0, col1, col2, col3]| {
+                            col0.text_edit_singleline(&mut self.probabilities[8]);
+                            col1.text_edit_singleline(&mut self.probabilities[9]);
+                            col2.text_edit_singleline(&mut self.probabilities[10]);
+                            col3.text_edit_singleline(&mut self.probabilities[11]);
                         });
                     },
                 );
@@ -231,11 +231,11 @@ impl eframe::App for App {
                     Vec2 { x: 200., y: 0. },
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(4, |ui| {
-                            ui[0].vertical_centered(|ui| ui.label(&self.event_a_name));
-                            ui[1].vertical_centered(|ui| ui.label(&self.event_an_name));
-                            ui[2].vertical_centered(|ui| ui.label(&self.event_a_name));
-                            ui[3].vertical_centered(|ui| ui.label(&self.event_an_name));
+                        ui.columns_const(|[col0, col1, col2, col3]| {
+                            col0.vertical_centered(|ui| ui.label(&self.event_a_name));
+                            col1.vertical_centered(|ui| ui.label(&self.event_an_name));
+                            col2.vertical_centered(|ui| ui.label(&self.event_a_name));
+                            col3.vertical_centered(|ui| ui.label(&self.event_an_name));
                         });
                     },
                 );
@@ -243,17 +243,17 @@ impl eframe::App for App {
                     Vec2 { x: 200., y: 0. },
                     Layout::left_to_right(Align::Min),
                     |ui| {
-                        ui.columns(4, |ui| {
-                            ui[0].vertical_centered(|ui| {
+                        ui.columns_const(|[col0, col1, col2, col3]| {
+                            col0.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[12])
                             });
-                            ui[1].vertical_centered(|ui| {
+                            col1.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[14])
                             });
-                            ui[2].vertical_centered(|ui| {
+                            col2.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[13])
                             });
-                            ui[3].vertical_centered(|ui| {
+                            col3.vertical_centered(|ui| {
                                 ui.text_edit_singleline(&mut self.probabilities[15])
                             });
                         });
