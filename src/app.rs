@@ -342,10 +342,10 @@ fn calculate_missing_probabilities(
             let p1 = &mut ab[0];
             *p1 = p1.map(|p| if i / 2 == 1 { Fraction::ONE - p } else { p });
             let p1_cond = &mut rest[i / 2];
-            *p1_cond = p1_cond.map(|p| (i % 2 == 1).then_some(Fraction::ONE - p).unwrap_or(p));
+            *p1_cond = p1_cond.map(|p| if i % 2 == 1 { Fraction::ONE - p } else { p });
             new_information_found |= calculate_missing_probabilitiy([p1, p1_cond, p_final]);
-            *p1 = p1.map(|p| (i / 2 == 1).then_some(Fraction::ONE - p).unwrap_or(p));
-            *p1_cond = p1_cond.map(|p| (i % 2 == 1).then_some(Fraction::ONE - p).unwrap_or(p));
+            *p1 = p1.map(|p| if i / 2 == 1 { Fraction::ONE - p } else { p });
+            *p1_cond = p1_cond.map(|p| if i % 2 == 1 { Fraction::ONE - p } else { p });
             if new_information_found {
                 if let (Some(x), Some(y), Some(z)) = (p1, p1_cond, &p_final) {
                     debug!("after calculate p1 - {i}: {x} {y} {z}");
@@ -353,12 +353,12 @@ fn calculate_missing_probabilities(
             }
 
             let p2 = &mut ab[1];
-            *p2 = p2.map(|p| (i % 2 == 1).then_some(Fraction::ONE - p).unwrap_or(p));
+            *p2 = p2.map(|p| if i % 2 == 1 { Fraction::ONE - p } else { p });
             let p2_cond = &mut rest[i % 2 + 2];
-            *p2_cond = p2_cond.map(|p| (i / 2 == 1).then_some(Fraction::ONE - p).unwrap_or(p));
+            *p2_cond = p2_cond.map(|p| if i / 2 == 1 { Fraction::ONE - p } else { p });
             new_information_found |= calculate_missing_probabilitiy([p2, p2_cond, p_final]);
-            *p2 = p2.map(|p| (i % 2 == 1).then_some(Fraction::ONE - p).unwrap_or(p));
-            *p2_cond = p2_cond.map(|p| (i / 2 == 1).then_some(Fraction::ONE - p).unwrap_or(p));
+            *p2 = p2.map(|p| if i % 2 == 1 { Fraction::ONE - p } else { p });
+            *p2_cond = p2_cond.map(|p| if i / 2 == 1 { Fraction::ONE - p } else { p });
             if new_information_found {
                 if let (Some(x), Some(y), Some(z)) = (p2, p2_cond, &p_final) {
                     debug!("after calculate p2 - {i}: {x} {y} {z}")
