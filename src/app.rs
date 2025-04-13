@@ -117,148 +117,152 @@ impl eframe::App for App {
         });
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.columns_const(|[tree_1, tree_2]| {
-                tree_1.allocate_ui_with_layout(
-                    Vec2 { x: 100., y: 0. },
-                    Layout::centered_and_justified(Direction::TopDown),
-                    |ui| {
-                        ui.label("1");
-                    },
-                );
-                tree_1.allocate_ui_with_layout(
-                    Vec2 { x: 200., y: 0. },
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1]| {
-                            col0.text_edit_singleline(&mut self.probabilities[0]);
-                            col1.text_edit_singleline(&mut self.probabilities[1]);
-                        })
-                    },
-                );
-                tree_1.allocate_ui_with_layout(
-                    Vec2::new(200., 0.),
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1]| {
-                            col0.vertical_centered(|ui| ui.label(&self.event_a_name));
-                            col1.vertical_centered(|ui| ui.label(&self.event_an_name));
-                        })
-                    },
-                );
-                tree_1.allocate_ui_with_layout(
-                    Vec2::new(200., 0.),
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1, col2, col3]| {
-                            col0.text_edit_singleline(&mut self.probabilities[4]);
-                            col1.text_edit_singleline(&mut self.probabilities[5]);
-                            col2.text_edit_singleline(&mut self.probabilities[6]);
-                            col3.text_edit_singleline(&mut self.probabilities[7]);
-                        });
-                    },
-                );
-                tree_1.allocate_ui_with_layout(
-                    Vec2 { x: 200., y: 0. },
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1, col2, col3]| {
-                            col0.vertical_centered(|ui| ui.label(&self.event_b_name));
-                            col1.vertical_centered(|ui| ui.label(&self.event_bn_name));
-                            col2.vertical_centered(|ui| ui.label(&self.event_b_name));
-                            col3.vertical_centered(|ui| ui.label(&self.event_bn_name));
-                        });
-                    },
-                );
-                tree_1.allocate_ui_with_layout(
-                    Vec2 { x: 200., y: 0. },
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1, col2, col3]| {
-                            col0.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[12])
+                tree_1.group(|tree_1| {
+                    tree_1.allocate_ui_with_layout(
+                        Vec2 { x: 100., y: 0. },
+                        Layout::centered_and_justified(Direction::TopDown),
+                        |ui| {
+                            ui.label("1");
+                        },
+                    );
+                    tree_1.allocate_ui_with_layout(
+                        Vec2 { x: 50., y: 0. },
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1]| {
+                                col0.text_edit_singleline(&mut self.probabilities[0]);
+                                col1.text_edit_singleline(&mut self.probabilities[1]);
+                            })
+                        },
+                    );
+                    tree_1.allocate_ui_with_layout(
+                        Vec2::new(200., 0.),
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1]| {
+                                col0.vertical_centered(|ui| ui.label(&self.event_a_name));
+                                col1.vertical_centered(|ui| ui.label(&self.event_an_name));
+                            })
+                        },
+                    );
+                    tree_1.allocate_ui_with_layout(
+                        Vec2::new(200., 0.),
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1, col2, col3]| {
+                                col0.text_edit_singleline(&mut self.probabilities[4]);
+                                col1.text_edit_singleline(&mut self.probabilities[5]);
+                                col2.text_edit_singleline(&mut self.probabilities[6]);
+                                col3.text_edit_singleline(&mut self.probabilities[7]);
                             });
-                            col1.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[13])
+                        },
+                    );
+                    tree_1.allocate_ui_with_layout(
+                        Vec2 { x: 200., y: 0. },
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1, col2, col3]| {
+                                col0.vertical_centered(|ui| ui.label(&self.event_b_name));
+                                col1.vertical_centered(|ui| ui.label(&self.event_bn_name));
+                                col2.vertical_centered(|ui| ui.label(&self.event_b_name));
+                                col3.vertical_centered(|ui| ui.label(&self.event_bn_name));
                             });
-                            col2.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[14])
+                        },
+                    );
+                    tree_1.allocate_ui_with_layout(
+                        Vec2 { x: 200., y: 0. },
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1, col2, col3]| {
+                                col0.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[12])
+                                });
+                                col1.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[13])
+                                });
+                                col2.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[14])
+                                });
+                                col3.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[15])
+                                });
                             });
-                            col3.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[15])
+                        },
+                    );
+                });
+                tree_2.group(|tree_2| {
+                    tree_2.allocate_ui_with_layout(
+                        Vec2 { x: 100., y: 0. },
+                        Layout::centered_and_justified(Direction::TopDown),
+                        |ui| {
+                            ui.label("1");
+                        },
+                    );
+                    tree_2.allocate_ui_with_layout(
+                        Vec2 { x: 200., y: 0. },
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1]| {
+                                col0.text_edit_singleline(&mut self.probabilities[2]);
+                                col1.text_edit_singleline(&mut self.probabilities[3]);
+                            })
+                        },
+                    );
+                    tree_2.allocate_ui_with_layout(
+                        Vec2::new(200., 0.),
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1]| {
+                                col0.vertical_centered(|ui| ui.label(&self.event_b_name));
+                                col1.vertical_centered(|ui| ui.label(&self.event_bn_name));
+                            })
+                        },
+                    );
+                    tree_2.allocate_ui_with_layout(
+                        Vec2::new(200., 0.),
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1, col2, col3]| {
+                                col0.text_edit_singleline(&mut self.probabilities[8]);
+                                col1.text_edit_singleline(&mut self.probabilities[9]);
+                                col2.text_edit_singleline(&mut self.probabilities[10]);
+                                col3.text_edit_singleline(&mut self.probabilities[11]);
                             });
-                        });
-                    },
-                );
-                tree_2.allocate_ui_with_layout(
-                    Vec2 { x: 100., y: 0. },
-                    Layout::centered_and_justified(Direction::TopDown),
-                    |ui| {
-                        ui.label("1");
-                    },
-                );
-                tree_2.allocate_ui_with_layout(
-                    Vec2 { x: 200., y: 0. },
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1]| {
-                            col0.text_edit_singleline(&mut self.probabilities[2]);
-                            col1.text_edit_singleline(&mut self.probabilities[3]);
-                        })
-                    },
-                );
-                tree_2.allocate_ui_with_layout(
-                    Vec2::new(200., 0.),
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1]| {
-                            col0.vertical_centered(|ui| ui.label(&self.event_b_name));
-                            col1.vertical_centered(|ui| ui.label(&self.event_bn_name));
-                        })
-                    },
-                );
-                tree_2.allocate_ui_with_layout(
-                    Vec2::new(200., 0.),
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1, col2, col3]| {
-                            col0.text_edit_singleline(&mut self.probabilities[8]);
-                            col1.text_edit_singleline(&mut self.probabilities[9]);
-                            col2.text_edit_singleline(&mut self.probabilities[10]);
-                            col3.text_edit_singleline(&mut self.probabilities[11]);
-                        });
-                    },
-                );
-                tree_2.allocate_ui_with_layout(
-                    Vec2 { x: 200., y: 0. },
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1, col2, col3]| {
-                            col0.vertical_centered(|ui| ui.label(&self.event_a_name));
-                            col1.vertical_centered(|ui| ui.label(&self.event_an_name));
-                            col2.vertical_centered(|ui| ui.label(&self.event_a_name));
-                            col3.vertical_centered(|ui| ui.label(&self.event_an_name));
-                        });
-                    },
-                );
-                tree_2.allocate_ui_with_layout(
-                    Vec2 { x: 200., y: 0. },
-                    Layout::left_to_right(Align::Min),
-                    |ui| {
-                        ui.columns_const(|[col0, col1, col2, col3]| {
-                            col0.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[12])
+                        },
+                    );
+                    tree_2.allocate_ui_with_layout(
+                        Vec2 { x: 200., y: 0. },
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1, col2, col3]| {
+                                col0.vertical_centered(|ui| ui.label(&self.event_a_name));
+                                col1.vertical_centered(|ui| ui.label(&self.event_an_name));
+                                col2.vertical_centered(|ui| ui.label(&self.event_a_name));
+                                col3.vertical_centered(|ui| ui.label(&self.event_an_name));
                             });
-                            col1.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[14])
+                        },
+                    );
+                    tree_2.allocate_ui_with_layout(
+                        Vec2 { x: 200., y: 0. },
+                        Layout::left_to_right(Align::Min),
+                        |ui| {
+                            ui.columns_const(|[col0, col1, col2, col3]| {
+                                col0.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[12])
+                                });
+                                col1.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[14])
+                                });
+                                col2.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[13])
+                                });
+                                col3.vertical_centered(|ui| {
+                                    ui.text_edit_singleline(&mut self.probabilities[15])
+                                });
                             });
-                            col2.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[13])
-                            });
-                            col3.vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.probabilities[15])
-                            });
-                        });
-                    },
-                );
+                        },
+                    );
+                });
             });
         });
     }
