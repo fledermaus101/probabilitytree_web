@@ -1,4 +1,5 @@
 use std::{
+    array,
     ops::{Div, Mul},
     str::FromStr,
 };
@@ -15,25 +16,26 @@ pub struct App {
     event_b_name: String,
     event_bn_name: String,
 
-    p_a: String,
-    p_an: String,
-    p_b: String,
-    p_bn: String,
-
-    p_a_b: String,
-    p_a_bn: String,
-    p_an_b: String,
-    p_an_bn: String,
-
-    p_b_a: String,
-    p_b_an: String,
-    p_bn_a: String,
-    p_bn_an: String,
-
-    p_a_union_b: String,
-    p_a_union_bn: String,
-    p_an_union_b: String,
-    p_an_union_bn: String,
+    probabilities: [String; 16],
+    // p_a: String,
+    // p_an: String,
+    // p_b: String,
+    // p_bn: String,
+    //
+    // p_a_b: String,
+    // p_a_bn: String,
+    // p_an_b: String,
+    // p_an_bn: String,
+    //
+    // p_b_a: String,
+    // p_b_an: String,
+    // p_bn_a: String,
+    // p_bn_an: String,
+    //
+    // p_a_union_b: String,
+    // p_a_union_bn: String,
+    // p_an_union_b: String,
+    // p_an_union_bn: String,
 }
 
 impl Default for App {
@@ -43,22 +45,7 @@ impl Default for App {
             event_an_name: String::from("A'"),
             event_b_name: String::from("B"),
             event_bn_name: String::from("B'"),
-            p_a: String::new(),
-            p_an: String::new(),
-            p_b: String::new(),
-            p_bn: String::new(),
-            p_a_b: String::new(),
-            p_a_bn: String::new(),
-            p_an_b: String::new(),
-            p_an_bn: String::new(),
-            p_b_a: String::new(),
-            p_b_an: String::new(),
-            p_bn_a: String::new(),
-            p_bn_an: String::new(),
-            p_a_union_b: String::new(),
-            p_a_union_bn: String::new(),
-            p_an_union_b: String::new(),
-            p_an_union_bn: String::new(),
+            probabilities: array::from_fn(|_| String::new()),
         }
     }
 }
@@ -87,63 +74,42 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::SidePanel::left("left_panel").show(ctx, |ui| {
             if ui.button("Calculate").clicked() {
-                let (probabilities, probabilities_final) = parse_probabilities(self);
-                let (probabilities, probabilities_final) =
-                    calculate_missing_probabilities(probabilities, probabilities_final);
-                self.p_a = probabilities[0]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_an = probabilities[0]
-                    .map(|x| (Fraction::ONE - x).to_string())
-                    .unwrap_or(String::new());
+                let mut probabilities_simplified = Vec::with_capacity(10);
+                self.probabilities[..12]
+                    .array_chunks::<2>()
+                    .map(
+                        |[p, pn]| match (Fraction::from_str(p), Fraction::from_str(pn)) {
+                            (Ok(p), Ok(pn)) => (p + pn == Fraction::one()).then_some(p),
+                            (Ok(p), Err(_)) => Some(p),
+                            (Err(_), Ok(pn)) => Some(Fraction::one() - pn),
+                            (Err(_), Err(_)) => None,
+                        },
+                    )
+                    .collect_into(&mut probabilities_simplified);
 
-                self.p_b = probabilities[1]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_bn = probabilities[1]
-                    .map(|x| (Fraction::ONE - x).to_string())
-                    .unwrap_or(String::new());
+                probabilities_simplified.extend(
+                    self.probabilities[12..16]
+                        .iter()
+                        .map(|p| Fraction::from_str(p).ok()),
+                );
+                debug!("{:?}", &probabilities_simplified);
+                let probabilities_new = calculate_missing_probabilities(
+                    probabilities_simplified
+                        .try_into()
+                        .expect("probability array has incorrect size"),
+                );
+                for (i, p) in probabilities_new[..6].iter().enumerate() {
+                    if let Some(p) = p {
+                        self.probabilities[i * 2] = p.to_string();
+                        self.probabilities[i * 2 + 1] = (Fraction::ONE - *p).to_string();
+                    }
+                }
 
-                self.p_a_b = probabilities[2]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_a_bn = probabilities[2]
-                    .map(|x| (Fraction::ONE - x).to_string())
-                    .unwrap_or(String::new());
-
-                self.p_an_b = probabilities[3]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_an_bn = probabilities[3]
-                    .map(|x| (Fraction::ONE - x).to_string())
-                    .unwrap_or(String::new());
-
-                self.p_b_a = probabilities[4]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_b_an = probabilities[4]
-                    .map(|x| (Fraction::ONE - x).to_string())
-                    .unwrap_or(String::new());
-
-                self.p_bn_a = probabilities[5]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_bn_an = probabilities[5]
-                    .map(|x| (Fraction::ONE - x).to_string())
-                    .unwrap_or(String::new());
-
-                self.p_a_union_b = probabilities_final[0]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_a_union_bn = probabilities_final[1]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_an_union_b = probabilities_final[2]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
-                self.p_an_union_bn = probabilities_final[3]
-                    .map(|x| x.to_string())
-                    .unwrap_or(String::new());
+                for (i, p) in probabilities_new[6..10].iter().enumerate() {
+                    if let Some(p) = p {
+                        self.probabilities[12 + i] = p.to_string();
+                    }
+                }
             }
         });
         egui::CentralPanel::default().show(ctx, |ui| {
@@ -160,8 +126,8 @@ impl eframe::App for App {
                     Layout::left_to_right(Align::Min),
                     |ui| {
                         ui.columns(2, |ui| {
-                            ui[0].text_edit_singleline(&mut self.p_a);
-                            ui[1].text_edit_singleline(&mut self.p_an);
+                            ui[0].text_edit_singleline(&mut self.probabilities[0]);
+                            ui[1].text_edit_singleline(&mut self.probabilities[1]);
                         })
                     },
                 );
@@ -180,10 +146,10 @@ impl eframe::App for App {
                     Layout::left_to_right(Align::Min),
                     |ui| {
                         ui.columns(4, |ui| {
-                            ui[0].text_edit_singleline(&mut self.p_a_b);
-                            ui[1].text_edit_singleline(&mut self.p_a_bn);
-                            ui[2].text_edit_singleline(&mut self.p_an_b);
-                            ui[3].text_edit_singleline(&mut self.p_an_bn);
+                            ui[0].text_edit_singleline(&mut self.probabilities[4]);
+                            ui[1].text_edit_singleline(&mut self.probabilities[5]);
+                            ui[2].text_edit_singleline(&mut self.probabilities[6]);
+                            ui[3].text_edit_singleline(&mut self.probabilities[7]);
                         });
                     },
                 );
@@ -205,16 +171,16 @@ impl eframe::App for App {
                     |ui| {
                         ui.columns(4, |ui| {
                             ui[0].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_a_union_b)
+                                ui.text_edit_singleline(&mut self.probabilities[12])
                             });
                             ui[1].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_a_union_bn)
+                                ui.text_edit_singleline(&mut self.probabilities[13])
                             });
                             ui[2].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_an_union_b)
+                                ui.text_edit_singleline(&mut self.probabilities[14])
                             });
                             ui[3].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_an_union_bn)
+                                ui.text_edit_singleline(&mut self.probabilities[15])
                             });
                         });
                     },
@@ -231,8 +197,8 @@ impl eframe::App for App {
                     Layout::left_to_right(Align::Min),
                     |ui| {
                         ui.columns(2, |ui| {
-                            ui[0].text_edit_singleline(&mut self.p_b);
-                            ui[1].text_edit_singleline(&mut self.p_bn);
+                            ui[0].text_edit_singleline(&mut self.probabilities[2]);
+                            ui[1].text_edit_singleline(&mut self.probabilities[3]);
                         })
                     },
                 );
@@ -251,10 +217,10 @@ impl eframe::App for App {
                     Layout::left_to_right(Align::Min),
                     |ui| {
                         ui.columns(4, |ui| {
-                            ui[0].text_edit_singleline(&mut self.p_b_a);
-                            ui[1].text_edit_singleline(&mut self.p_b_an);
-                            ui[2].text_edit_singleline(&mut self.p_bn_a);
-                            ui[3].text_edit_singleline(&mut self.p_bn_an);
+                            ui[0].text_edit_singleline(&mut self.probabilities[8]);
+                            ui[1].text_edit_singleline(&mut self.probabilities[9]);
+                            ui[2].text_edit_singleline(&mut self.probabilities[10]);
+                            ui[3].text_edit_singleline(&mut self.probabilities[11]);
                         });
                     },
                 );
@@ -276,16 +242,16 @@ impl eframe::App for App {
                     |ui| {
                         ui.columns(4, |ui| {
                             ui[0].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_a_union_b)
+                                ui.text_edit_singleline(&mut self.probabilities[12])
                             });
                             ui[1].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_an_union_b)
+                                ui.text_edit_singleline(&mut self.probabilities[14])
                             });
                             ui[2].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_a_union_bn)
+                                ui.text_edit_singleline(&mut self.probabilities[13])
                             });
                             ui[3].vertical_centered(|ui| {
-                                ui.text_edit_singleline(&mut self.p_an_union_bn)
+                                ui.text_edit_singleline(&mut self.probabilities[15])
                             });
                         });
                     },
@@ -295,38 +261,9 @@ impl eframe::App for App {
     }
 }
 
-fn parse_probabilities(app: &App) -> ([Option<Fraction>; 6], [Option<Fraction>; 4]) {
-    let probabilities = [
-        (&app.p_a, &app.p_an),
-        (&app.p_b, &app.p_bn),
-        (&app.p_a_b, &app.p_a_bn),
-        (&app.p_an_b, &app.p_an_bn),
-        (&app.p_b_a, &app.p_b_an),
-        (&app.p_bn_a, &app.p_bn_an),
-    ]
-    .map(
-        |(p, pn)| match (Fraction::from_str(p), Fraction::from_str(pn)) {
-            (Ok(p), Ok(pn)) => (p + pn == Fraction::one()).then_some(p),
-            (Ok(p), Err(_)) => Some(p),
-            (Err(_), Ok(pn)) => Some(Fraction::one() - pn),
-            (Err(_), Err(_)) => None,
-        },
-    );
-
-    let probabilities_final = [
-        &app.p_a_union_b,
-        &app.p_a_union_bn,
-        &app.p_an_union_b,
-        &app.p_an_union_bn,
-    ]
-    .map(|p| Fraction::from_str(p).ok());
-    (probabilities, probabilities_final)
-}
-
 fn calculate_missing_probabilities(
-    mut probabilities: [Option<Fraction>; 6],
-    mut probabilities_final: [Option<Fraction>; 4],
-) -> ([Option<Fraction>; 6], [Option<Fraction>; 4]) {
+    mut probabilities_start: [Option<Fraction>; 10],
+) -> [Option<Fraction>; 10] {
     // p_a
     // p_b
     // p_a_b
@@ -343,15 +280,22 @@ fn calculate_missing_probabilities(
     // b * (1-b_a)  = an_union_b | 1 4
     // (1-a) * (1-an_b) = an_union_bn | 0 3
     // (1-b) * (1-bn_a) = an_union_bn | 1 5
+    let (probabilities, probabilities_final) = probabilities_start.split_at_mut(6);
     let mut new_information_found = true;
     while new_information_found {
         new_information_found = false;
-        if probabilities_final.into_iter().flatten().count() == 3 {
+        if probabilities_final.iter().flatten().count() == 3 {
             probabilities_final[probabilities_final
-                .into_iter()
+                .iter()
                 .position(|x| x.is_none())
-                .unwrap()] =
-                Some(Fraction::ONE - probabilities_final.into_iter().flatten().sum::<Fraction>());
+                .unwrap()] = Some(
+                Fraction::ONE
+                    - probabilities_final
+                        .iter()
+                        .flatten()
+                        .map(|x| *x)
+                        .sum::<Fraction>(),
+            );
         }
         for (i, p_final) in probabilities_final.iter_mut().enumerate() {
             let (ab, rest) = probabilities.split_at_mut(2);
@@ -381,10 +325,10 @@ fn calculate_missing_probabilities(
                 }
             }
         }
-        println!("New information found! Next round!");
-        println!();
+        debug!("New information found! Next round!");
+        debug!("");
     }
-    (probabilities, probabilities_final)
+    probabilities_start
 }
 
 fn calculate_missing_probabilitiy(array: [&mut Option<Fraction>; 3]) -> bool {
@@ -392,7 +336,7 @@ fn calculate_missing_probabilitiy(array: [&mut Option<Fraction>; 3]) -> bool {
         return false;
     }
 
-    println!("{}", array.iter().position(|x| x.is_none()).unwrap());
+    debug!("{}", array.iter().position(|x| x.is_none()).unwrap());
     match array.iter().position(|x| x.is_none()).unwrap() {
         0 => *array[0] = (*array[2]).zip_with(*array[1], Fraction::div),
         1 => *array[1] = (*array[2]).zip_with(*array[0], Fraction::div),
@@ -422,7 +366,7 @@ mod tests {
             calculate_missing_probabilities(probabilities, probabilities_final);
         let names = ["p_a", "p_b", "p_a_b", "p_an_b", "p_b_a", "p_bn_a"];
         for (p, name) in p_new.map(Option::unwrap).iter().zip(names) {
-            println!("{name}, {p}");
+            debug!("{name}, {p}");
         }
         let p_correct = [(3u32, 5u32), (3, 4), (3, 4), (3, 4), (3, 5), (3, 5)]
             .map(|(n, d)| Fraction::new(n, d))
