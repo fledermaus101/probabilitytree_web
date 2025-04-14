@@ -366,33 +366,63 @@ mod tests {
             None,
             Some(Fraction::new(3u64, 5u64)),
             None,
+            None,
+            None,
+            None,
+            Some(Fraction::new(1u64, 10u64)),
         ];
-        let probabilities_final = [None, None, None, Some(Fraction::new(1u64, 10u64))];
 
-        let (p_new, p_new_final) =
-            calculate_missing_probabilities(probabilities, probabilities_final);
-        let names = ["p_a", "p_b", "p_a_b", "p_an_b", "p_b_a", "p_bn_a"];
+        let p_new = calculate_missing_probabilities(probabilities);
+        let names = [
+            "p_a",
+            "p_b",
+            "p_a_b",
+            "p_an_b",
+            "p_b_a",
+            "p_bn_a",
+            "p_a_union_b",
+            "p_a_union_bn",
+            "p_an_union_b",
+            "p_an_union_bn",
+        ];
         for (p, name) in p_new.map(Option::unwrap).iter().zip(names) {
             debug!("{name}, {p}");
         }
-        let p_correct = [(3u32, 5u32), (3, 4), (3, 4), (3, 4), (3, 5), (3, 5)]
-            .map(|(n, d)| Fraction::new(n, d))
-            .map(Some);
-        let p_final_correct = [(9u32, 20u32), (3, 20), (3, 10), (1, 10)]
-            .map(|(n, d)| Fraction::new(n, d))
-            .map(Some);
+        let p_correct = [
+            (3u32, 5u32),
+            (3, 4),
+            (3, 4),
+            (3, 4),
+            (3, 5),
+            (3, 5),
+            (9u32, 20u32),
+            (3, 20),
+            (3, 10),
+            (1, 10),
+        ]
+        .map(|(n, d)| Fraction::new(n, d))
+        .map(Some);
         assert_eq!(p_new, p_correct);
-        assert_eq!(p_new_final, p_final_correct);
     }
 
     #[test]
     fn end_probabilities() {
-        let probabilities = [None; 6];
-        let probabilities_final = [Some((1u32, 4u32)), Some((1u32, 4u32)), Some((1, 4)), None]
-            .map(|opt| opt.map(|(n, d)| Fraction::new(n, d)));
+        let probabilities = [
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some((1u32, 4u32)),
+            Some((1u32, 4u32)),
+            Some((1, 4)),
+            None,
+        ]
+        .map(|opt| opt.map(|(n, d)| Fraction::new(n, d)));
 
-        let (_, p_new_final) = calculate_missing_probabilities(probabilities, probabilities_final);
-        assert!(p_new_final
+        let p_new = calculate_missing_probabilities(probabilities);
+        assert!(p_new[6..10]
             .iter()
             .all(|x| *x == Some(Fraction::new(1u32, 4u32))));
     }
