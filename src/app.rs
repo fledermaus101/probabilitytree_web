@@ -277,7 +277,6 @@ fn calculate_missing_probabilities(
     // p_an_b
     // p_b_a
     // p_bn_a
-    // a_union_b + a_union_bn + an_union_b + an_union_bn = 1
     // path rules
     // a * a_b = a_union_b | 0 2
     // b * b_a = a_union_b | 1 4
@@ -288,21 +287,38 @@ fn calculate_missing_probabilities(
     // (1-a) * (1-an_b) = an_union_bn | 0 3
     // (1-b) * (1-bn_a) = an_union_bn | 1 5
     let (probabilities, probabilities_final) = probabilities_start.split_at_mut(6);
+    // special case, where not all probabilities can be found
+    // a_union_b + a_union_bn + an_union_b + an_union_bn = 1
+    if probabilities_final.iter().flatten().count() == 3 {
+        probabilities_final[probabilities_final
+            .iter()
+            .position(Option::is_none)
+            .unwrap()] =
+            Some(Fraction::ONE - probabilities_final.iter().flatten().sum::<Fraction>());
+    }
     let mut new_information_found = true;
     while new_information_found {
         new_information_found = false;
-        if probabilities_final.iter().flatten().count() == 3 {
-            probabilities_final[probabilities_final
-                .iter()
-                .position(|x| x.is_none())
-                .unwrap()] = Some(
-                Fraction::ONE
-                    - probabilities_final
-                        .iter()
-                        .flatten()
-                        .map(|x| *x)
-                        .sum::<Fraction>(),
-            );
+        debug!("Start of round:");
+        // a_union_b + a_union_bn = p_a
+        if let (Some(p1), Some(p2)) = (probabilities_final[0], probabilities_final[1]) {
+            debug!("a_union_b + an_union_bn = p_a = {}", p1 + p2);
+            probabilities[0] = Some(p1 + p2);
+        }
+        // an_union_b + an_union_bn = 1 - p_a
+        if let (Some(p1), Some(p2)) = (probabilities_final[2], probabilities_final[3]) {
+            debug!("an_union_b + an_union_bn = p_an = {}", p1 + p2);
+            probabilities[0] = Some(Fraction::ONE - (p1 + p2));
+        }
+        // a_union_b + an_union_b = p_b
+        if let (Some(p1), Some(p2)) = (probabilities_final[0], probabilities_final[2]) {
+            debug!("a_union_b + an_union_b = p_b = {}", p1 + p2);
+            probabilities[1] = Some(p1 + p2);
+        }
+        // a_union_bn + an_union_bn = 1 - p_a
+        if let (Some(p1), Some(p2)) = (probabilities_final[1], probabilities_final[3]) {
+            debug!("a_union_bn + an_union_bn= p_bn = {}", p1 + p2);
+            probabilities[1] = Some(Fraction::ONE - (p1 + p2));
         }
         for (i, p_final) in probabilities_final.iter_mut().enumerate() {
             let (ab, rest) = probabilities.split_at_mut(2);
@@ -332,8 +348,6 @@ fn calculate_missing_probabilities(
                 }
             }
         }
-        debug!("New information found! Next round!");
-        debug!("");
     }
     probabilities_start
 }
