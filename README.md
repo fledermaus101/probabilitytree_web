@@ -1,4 +1,4 @@
-# eframe template
+# Probability (decision) tree solver
 
 [![dependency status](https://deps.rs/repo/github/fledermaus101/probabilitytree_web/status.svg)](https://deps.rs/repo/github/fledermaus101/probabilitytree_web)
 [![Build Status](https://github.com/fledermaus101/probabilitytree_web/workflows/CI/badge.svg)](https://github.com/fledermaus101/probabilitytree_web/actions?workflow=CI)
